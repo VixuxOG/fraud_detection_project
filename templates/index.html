@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Fraud Transaction Detector</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body>
+    <h1>Upload Transaction Data (CSV)</h1>
+
+    <form id="upload-form">
+        <label for="csv-file">Choose CSV File:</label>
+        <input type="file" id="csv-file" name="file" accept=".csv" required>
+        <button type="submit">Analyze Transactions</button>
+    </form>
+
+    <div id="status"></div>
+
+    <div id="results" style="display: none;">
+        <h2>Analysis Results</h2>
+        <p id="fraud-count"></p>
+        <h3>Fraudulent Transaction Details:</h3>
+        <div class="table-container">
+            <table id="fraud-table">
+                <thead>
+                    <tr>
+                        <th>Transaction ID</th>
+                        <th>User ID</th>
+                        <th>Merchant ID</th>
+                        <th>Amount</th>
+                        <th>Timestamp</th>
+                        <th>Description</th>
+                        <!-- Add other relevant columns you want to display -->
+                    </tr>
+                </thead>
+                <tbody>
+                    <!-- Fraudulent transactions will be populated here -->
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <script>
+        const form = document.getElementById('upload-form');
+        const fileInput = document.getElementById('csv-file');
+        const statusDiv = document.getElementById('status');
+        const resultsDiv = document.getElementById('results');
+        const fraudCountP = document.getElementById('fraud-count');
+        const fraudTableBody = document.querySelector('#fraud-table tbody');
+
+        form.addEventListener('submit', async (event) => {
+            event.preventDefault(); // Prevent default form submission
+
+            statusDiv.textContent = 'Uploading and processing...';
+            statusDiv.className = 'status-processing'; // Add class for styling
+            resultsDiv.style.display = 'none';
+            fraudTableBody.innerHTML = ''; // Clear previous results
+
+            const file = fileInput.files[0];
+            if (!file) {
+                statusDiv.textContent = 'Please select a CSV file.';
+                statusDiv.className = 'status-error';
+                return;
+            }
+
+            const formData = new FormData();
+            formData.append('file', file);
+
+            try {
+                const response = await fetch('/predict', {
+                    method: 'POST',
+                    body: formData,
+                });
+
+                const data = await response.json();
+
+                if (response.ok && data.success) {
+                    statusDiv.textContent = 'Processing complete.';
+                    statusDiv.className = 'status-success';
+                    fraudCountP.textContent = `Total Fraudulent Transactions Found: ${data.fraud_count}`;
+
+                    if (data.fraud_count > 0) {
+                        data.fraudulent_transactions.forEach(tx => {
+                            const row = fraudTableBody.insertRow();
+                            row.insertCell().textContent = tx.transaction_id || 'N/A';
+                            row.insertCell().textContent = tx.user_id || 'N/A';
+                            row.insertCell().textContent = tx.merchant_id || 'N/A';
+                            row.insertCell().textContent = tx.amount !== null ? parseFloat(tx.amount).toFixed(2) : 'N/A';
+                            row.insertCell().textContent = tx.timestamp || 'N/A';
+                            row.insertCell().textContent = tx.description || 'N/A';
+                            // Add cells for other displayed columns
+                        });
+                    } else {
+                         const row = fraudTableBody.insertRow();
+                         const cell = row.insertCell();
+                         cell.colSpan = 6; // Adjust colspan based on number of columns
+                         cell.textContent = "No fraudulent transactions detected.";
+                         cell.style.textAlign = 'center';
+                    }
+                    resultsDiv.style.display = 'block'; // Show results section
+
+                } else {
+                    // Handle errors reported by the backend
+                    statusDiv.textContent = `Error: ${data.error || 'Unknown error processing file.'}`;
+                    statusDiv.className = 'status-error';
+                }
+
+            } catch (error) {
+                console.error('Error during fetch:', error);
+                statusDiv.textContent = 'An error occurred while communicating with the server.';
+                statusDiv.className = 'status-error';
+            } finally {
+                 // Optional: Clear processing message if needed, or leave the final status
+            }
+        });
+    </script>
+</body>
+</html>
