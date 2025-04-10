@@ -1,0 +1,6 @@
+Flask>=2.0
+pandas>=1.3
+scikit-learn>=1.0  # Adjust version if needed
+joblib>=1.0
+tensorflow>=2.5    # Adjust version if needed (compatible with your .keras model)
+numpy>=1.19
