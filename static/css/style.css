@@ -1,0 +1,113 @@
+body {
+    font-family: sans-serif;
+    margin: 20px;
+    line-height: 1.6;
+    background-color: #f4f4f4;
+    color: #333;
+}
+
+h1, h2, h3 {
+    color: #2c3e50;
+}
+
+#upload-form {
+    background-color: #fff;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    margin-bottom: 20px;
+}
+
+#upload-form label {
+    display: block;
+    margin-bottom: 8px;
+    font-weight: bold;
+}
+
+#upload-form input[type="file"] {
+    display: block;
+    margin-bottom: 15px;
+    padding: 8px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    width: calc(100% - 20px); /* Adjust width */
+}
+
+#upload-form button {
+    background-color: #3498db;
+    color: white;
+    padding: 10px 20px;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 1em;
+    transition: background-color 0.3s ease;
+}
+
+#upload-form button:hover {
+    background-color: #2980b9;
+}
+
+#status {
+    margin-top: 15px;
+    padding: 10px;
+    border-radius: 4px;
+    font-weight: bold;
+}
+
+.status-processing {
+    background-color: #eaf2f8;
+    color: #2c3e50;
+    border: 1px solid #aed6f1;
+}
+
+.status-success {
+    background-color: #d4efdf;
+    color: #145a32;
+    border: 1px solid #a9dfbf;
+}
+
+.status-error {
+    background-color: #fdedec;
+    color: #c0392b;
+    border: 1px solid #f5b7b1;
+}
+
+
+#results {
+    background-color: #fff;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    margin-top: 20px;
+}
+
+.table-container {
+    overflow-x: auto; /* Allows horizontal scrolling for tables on small screens */
+}
+
+#fraud-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 15px;
+}
+
+#fraud-table th, #fraud-table td {
+    border: 1px solid #ddd;
+    padding: 10px;
+    text-align: left;
+}
+
+#fraud-table th {
+    background-color: #ecf0f1;
+    color: #2c3e50;
+    font-weight: bold;
+}
+
+#fraud-table tbody tr:nth-child(even) {
+    background-color: #f9f9f9;
+}
+
+#fraud-table tbody tr:hover {
+    background-color: #f1f1f1;
+}
